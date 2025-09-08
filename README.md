@@ -2,7 +2,7 @@
 
 The SedUCE (**Sed**iment **U**n**C**ertainty **E**stimation) model provides uncertainty estimates on current and historical sediment load (SL) observations, based on seven methodological factors (related to both the sampling process and the load derivation process) and catchment area.  
 
-The model, along with a Python script to apply it, are available on [this repository](https://github.com/turbulentflo/Sandbox). 
+The model, along with a Python script to apply it, are available on [this repository](https://github.com/turbulentflo/SedUCE). 
 
 For information on model training and development, please refer to the accompanying [journal article](). 
 
