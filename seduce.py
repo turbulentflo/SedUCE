@@ -16,14 +16,14 @@ OUTPUT_HEADER = [
     'MP_length',
     'IA_method',
     'Area',
-    'SL_obs',
+    'SSL_obs',
     'Confidence_interval',
     'Percentile_low',
     'Percentile_high',
-    'SL_error_pred_low',
-    'SL_error_pred_high',
-    'SL_pred_low',
-    'SL_pred_high'
+    'SSL_error_pred_low',
+    'SSL_error_pred_high',
+    'SSL_pred_low',
+    'SSL_pred_high'
 ]
 
 # List of model input variables
@@ -48,15 +48,15 @@ CAT_FEATURES = [
 
 
 def run_seduce(input_path, output_path, model_path=MODEL_PATH):
-    """ Run SedUCE model on input SL observations.
+    """ Run SedUCE model on input SSL observations.
 
     Args:
-        input_csv (str): Full path to .csv file of SL observations
+        input_csv (str): Full path to .csv file of SSL observations
         output_csv (str): Full path to .csv model output
         model_path (str): Full path to SedUCE model
     """
 
-    # Load SL observations as Pandas DataFrame
+    # Load SSL observations as Pandas DataFrame
     df = pd.read_csv(input_path)
 
     df["Percentile_low"] = (100 - df["Confidence_interval"]) / 2
@@ -65,22 +65,22 @@ def run_seduce(input_path, output_path, model_path=MODEL_PATH):
     for bound in ("low", "high"):
         df["Percentile"] = df["Percentile_"+bound]
 
-        # Initialize CatBoost Pool from SL observations dataframe
+        # Initialize CatBoost Pool from SSL observations dataframe
         dataset = cb.Pool(data=df[X_VARIABLES], cat_features=CAT_FEATURES)
 
         # Initialize CatBoostRegressor and load trained model
         cb_model = cb.CatBoostRegressor()
         cb_model.load_model(model_path)
 
-        # Generate error predictions by applying model on SL observations
+        # Generate error predictions by applying model on SSL observations
         predictions = cb_model.predict(dataset)
 
         # Convert predicted log errors to normal values
-        df["SL_error_pred_"+bound] = 10 ** predictions
+        df["SSL_error_pred_"+bound] = 10 ** predictions
 
-        # Compute SL value associated with predicted error
+        # Compute SSL value associated with predicted error
         inv_bound = {"low": "high", "high": "low"}[bound]
-        df["SL_pred_"+inv_bound] = df["SL_obs"] / df["SL_error_pred_"+bound]
+        df["SSL_pred_"+inv_bound] = df["SSL_obs"] / df["SSL_error_pred_"+bound]
 
     df = df[OUTPUT_HEADER]
 
@@ -89,9 +89,9 @@ def run_seduce(input_path, output_path, model_path=MODEL_PATH):
 
 if __name__ == "__main__":
     parser = ArgumentParser(
-        description="Provides error estimates on sediment load (SL) observations using the SedUCE model.")
+        description="Provides error estimates on suspended sediment load (SSL) observations using the SedUCE model.")
     parser.add_argument("input_csv", type=str,
-                        help="Input csv file of SL observations")
+                        help="Input csv file of SSL observations")
     parser.add_argument("output_csv", type=str, help="Output csv model output")
     parser.add_argument("-m", "--model", type=str, default=MODEL_PATH,
                         help=f"SedUCE model to use (defaults to {MODEL_PATH})")

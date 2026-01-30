@@ -1,4 +1,4 @@
-ID,Scheme,Frequency,Q_error,SSC_error,LC_method,MP_length,IA_method,Area,SL_obs,Confidence_interval
+ID,Scheme,Frequency,Q_error,SSC_error,LC_method,MP_length,IA_method,Area,SSL_obs,Confidence_interval
 1,1,12,5,10,6,5,1,8510,486062,90
 2,3,25,0,35,4,1,0,938,33500,90
 3,2,50,10,0,7,10,1,95543,1353333,90
